@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rubik's Cube - Handmatige invoer</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #111827;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 30px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+p {
+    color: #d1d5db;
+}
+
+#colorPicker {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.colorButton {
+    width: 55px;
+    height: 55px;
+    border: 4px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.colorButton.selected {
+    border: 4px solid white;
+    transform: scale(1.1);
+}
+
+.white {
+    background: white;
+}
+
+.yellow {
+    background: #facc15;
+}
+
+.red {
+    background: #ef4444;
+}
+
+.orange {
+    background: #f97316;
+}
+
+.blue {
+    background: #3b82f6;
+}
+
+.green {
+    background: #22c55e;
+}
+
+#cube {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.face {
+    background: #000;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.face h2 {
+    margin: 5px;
+    font-size: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+    gap: 3px;
+}
+
+.sticker {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    background: #374151;
+    cursor: pointer;
+}
+
+.sticker.white {
+    background: white;
+}
+
+.sticker.yellow {
+    background: #facc15;
+}
+
+.sticker.red {
+    background: #ef4444;
+}
+
+.sticker.orange {
+    background: #f97316;
+}
+
+.sticker.blue {
+    background: #3b82f6;
+}
+
+.sticker.green {
+    background: #22c55e;
+}
+
+button.action {
+    padding: 12px 20px;
+    margin: 20px 5px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button.action:hover {
+    background: #1d4ed8;
+}
+
+#result {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Rubik's Cube invoeren</h1>
+
+<p>
+Kies eerst een kleur en klik daarna op de vakjes van de kubus.
+</p>
+
+<!-- KLEUREN KIEZEN -->
+
+<div id="colorPicker">
+
+    <button
+        class="colorButton white"
+        data-color="white"
+        onclick="selectColor('white')">
+    </button>
+
+    <button
+        class="colorButton yellow"
+        data-color="yellow"
+        onclick="selectColor('yellow')">
+    </button>
+
+    <button
+        class="colorButton red"
+        data-color="red"
+        onclick="selectColor('red')">
+    </button>
+
+    <button
+        class="colorButton orange"
+        data-color="orange"
+        onclick="selectColor('orange')">
+    </button>
+
+    <button
+        class="colorButton blue"
+        data-color="blue"
+        onclick="selectColor('blue')">
+    </button>
+
+    <button
+        class="colorButton green"
+        data-color="green"
+        onclick="selectColor('green')">
+    </button>
+
+</div>
+
+
+<!-- RUBIK'S CUBE -->
+
+<div id="cube">
+
+    <div class="face">
+        <h2>U - Boven</h2>
+        <div class="grid" id="U"></div>
+    </div>
+
+    <div class="face">
+        <h2>F - Voor</h2>
+        <div class="grid" id="F"></div>
+    </div>
+
+    <div class="face">
+        <h2>R - Rechts</h2>
+        <div class="grid" id="R"></div>
+    </div>
+
+    <div class="face">
+        <h2>B - Achter</h2>
+        <div class="grid" id="B"></div>
+    </div>
+
+    <div class="face">
+        <h2>L - Links</h2>
+        <div class="grid" id="L"></div>
+    </div>
+
+    <div class="face">
+        <h2>D - Onder</h2>
+        <div class="grid" id="D"></div>
+    </div>
+
+</div>
+
+
+<!-- KNOPPEN -->
+
+<div>
+
+    <button class="action" onclick="checkCube()">
+        Controleer kubus
+    </button>
+
+    <button class="action" onclick="resetCube()">
+        Reset
+    </button>
+
+</div>
+
+<div id="result"></div>
+
+
+<script>
+
+/*
+    Elke sticker krijgt een kleur.
+    
+    Bijvoorbeeld:
+
+    cubeState.U[0]
+    
+    betekent:
+    het eerste vakje van de bovenkant.
+*/
+
+const cubeState = {
+
+    U: Array(9).fill(null),
+    F: Array(9).fill(null),
+    R: Array(9).fill(null),
+    B: Array(9).fill(null),
+    L: Array(9).fill(null),
+    D: Array(9).fill(null)
+
+};
+
+
+/*
+    De kleur die momenteel
+    door de gebruiker is geselecteerd.
+*/
+
+let selectedColor = null;
+
+
+/*
+    De zes kleuren van een Rubik's Cube.
+*/
+
+const colors = [
+    "white",
+    "yellow",
+    "red",
+    "orange",
+    "blue",
+    "green"
+];
+
+
+/*
+    Maak voor elk vlak
+    9 klikbare stickers.
+*/
+
+function createCube() {
+
+    const faces = ["U", "F", "R", "B", "L", "D"];
+
+    faces.forEach(face => {
+
+        const grid = document.getElementById(face);
+
+        grid.innerHTML = "";
+
+        for (let i = 0; i < 9; i++) {
+
+            const sticker = document.createElement("div");
+
+            sticker.classList.add("sticker");
+
+            sticker.dataset.face = face;
+            sticker.dataset.index = i;
+
+            sticker.onclick = function () {
+
+                colorSticker(face, i, sticker);
+
+            };
+
+            grid.appendChild(sticker);
+        }
+
+    });
+
+}
+
+
+/*
+    Gebruiker kiest een kleur.
+*/
+
+function selectColor(color) {
+
+    selectedColor = color;
+
+    /*
+        Verwijder selectie van alle knoppen.
+    */
+
+    document.querySelectorAll(".colorButton").forEach(button => {
+
+        button.classList.remove("selected");
+
+    });
+
+
+    /*
+        Markeer de geselecteerde kleur.
+    */
+
+    const selectedButton =
+        document.querySelector(
+            `.colorButton[data-color="${color}"]`
+        );
+
+    selectedButton.classList.add("selected");
+
+}
+
+
+/*
+    Geef een sticker een kleur.
+*/
+
+function colorSticker(face, index, sticker) {
+
+    if (selectedColor === null) {
+
+        alert("Kies eerst een kleur.");
+
+        return;
+    }
+
+
+    /*
+        Sla kleur op in cubeState.
+    */
+
+    cubeState[face][index] = selectedColor;
+
+
+    /*
+        Verwijder oude kleuren.
+    */
+
+    colors.forEach(color => {
+
+        sticker.classList.remove(color);
+
+    });
+
+
+    /*
+        Voeg nieuwe kleur toe.
+    */
+
+    sticker.classList.add(selectedColor);
+
+}
+
+
+/*
+    Controleer of de kubus correct is ingevuld.
+*/
+
+function checkCube() {
+
+    const result = document.getElementById("result");
+
+
+    /*
+        Verzamel alle stickers.
+    */
+
+    const allStickers = [];
+
+
+    Object.values(cubeState).forEach(face => {
+
+        face.forEach(sticker => {
+
+            allStickers.push(sticker);
+
+        });
+
+    });
+
+
+    /*
+        Controleer of alle 54 vakjes
+        zijn ingevuld.
+    */
+
+    if (allStickers.includes(null)) {
+
+        result.style.color = "#f87171";
+
+        result.textContent =
+            "Niet alle 54 vakjes zijn ingevuld.";
+
+        return;
+    }
+
+
+    /*
+        Tel hoeveel keer iedere kleur voorkomt.
+    */
+
+    const counts = {
+
+        white: 0,
+        yellow: 0,
+        red: 0,
+        orange: 0,
+        blue: 0,
+        green: 0
+
+    };
+
+
+    allStickers.forEach(color => {
+
+        counts[color]++;
+
+    });
+
+
+    /*
+        Iedere kleur moet precies 9 keer voorkomen.
+    */
+
+    for (const color of colors) {
+
+        if (counts[color] !== 9) {
+
+            result.style.color = "#f87171";
+
+            result.textContent =
+                "De kubus is niet geldig. " +
+                color +
+                " komt " +
+                counts[color] +
+                " keer voor.";
+
+            return;
+        }
+
+    }
+
+
+    /*
+        Alles klopt.
+    */
+
+    result.style.color = "#4ade80";
+
+    result.textContent =
+        "✓ De kubus is correct ingevuld!";
+
+
+    console.log("Cube state:");
+
+    console.log(cubeState);
+
+}
+
+
+/*
+    Reset alle stickers.
+*/
+
+function resetCube() {
+
+    const faces = ["U", "F", "R", "B", "L", "D"];
+
+    faces.forEach(face => {
+
+        cubeState[face] = Array(9).fill(null);
+
+    });
+
+
+    /*
+        Maak de visuele kubus opnieuw.
+    */
+
+    createCube();
+
+
+    document.getElementById("result").textContent = "";
+
+}
+
+
+/*
+    Start de website.
+*/
+
+createCube();
+
+</script>
+
+</body>
+</html>
