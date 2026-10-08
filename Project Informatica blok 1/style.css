@@ -114,9 +114,14 @@ button {
 .manual-button {
     background-color: #172235;
     color: white;
-
     border: 1px solid #52627a;
     border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    padding: 13px 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
 }
 
 .manual-button:hover {
