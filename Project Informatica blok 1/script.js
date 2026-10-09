@@ -226,6 +226,38 @@ $('prevBtn').onclick = () => { playing = false; step(-1); };
 $('nextBtn').onclick = () => { playing = false; step(1); };
 $('playBtn').onclick = togglePlay;
 
+/* ================= Controle ================= */
+// Posities van de hoek- en randstukjes in de 54-tekenreeks (zelfde volgorde als de solver).
+const CORNER_POS = [[8, 9, 20], [6, 18, 38], [0, 36, 47], [2, 45, 11], [29, 26, 15], [27, 44, 24], [33, 53, 42], [35, 17, 51]];
+const CORNER_COL = ['URF', 'UFL', 'ULB', 'UBR', 'DFR', 'DLF', 'DBL', 'DRB'];
+const EDGE_POS = [[5, 10], [7, 19], [3, 37], [1, 46], [32, 16], [28, 25], [30, 43], [34, 52], [23, 12], [21, 41], [50, 39], [48, 14]];
+const EDGE_COL = ['UR', 'UF', 'UL', 'UB', 'DR', 'DF', 'DL', 'DB', 'FR', 'FL', 'BL', 'BR'];
+const parity = p => { let n = 0; for (let i = 0; i < p.length; i++) for (let j = i + 1; j < p.length; j++) if (p[i] > p[j]) n++; return n % 2; };
+
+// Geeft true als de cube echt kan bestaan.
+// Zonder deze controle blijft de solver bij een onmogelijke cube eindeloos zoeken.
+function isValid(s) {
+  const cp = [], co = [], ep = [], eo = [];
+  for (let i = 0; i < 8; i++) {
+    const cols = CORNER_POS[i].map(p => s[p]);
+    const ori = cols.findIndex(c => c === 'U' || c === 'D');
+    const j = ori < 0 ? -1 : CORNER_COL.findIndex(k => k[1] === cols[(ori + 1) % 3] && k[2] === cols[(ori + 2) % 3]);
+    if (j < 0) return false;
+    cp.push(j); co.push(ori);
+  }
+  for (let i = 0; i < 12; i++) {
+    const [a, b] = EDGE_POS[i].map(p => s[p]);
+    let j = EDGE_COL.indexOf(a + b), o = 0;
+    if (j < 0) { j = EDGE_COL.indexOf(b + a); o = 1; }
+    if (j < 0) return false;
+    ep.push(j); eo.push(o);
+  }
+  return new Set(cp).size === 8 && new Set(ep).size === 12
+    && co.reduce((a, b) => a + b, 0) % 3 === 0
+    && eo.reduce((a, b) => a + b, 0) % 2 === 0
+    && parity(cp) === parity(ep);
+}
+
 /* ================= Oplossen ================= */
 $('solveBtn').onclick = () => {
   const counts = countColors();
@@ -234,13 +266,18 @@ $('solveBtn').onclick = () => {
     setStatus('Elke kleur moet precies 9 keer voorkomen. Controleer: ' + wrong.map(f => NAMES[f]).join(', ') + '.', true);
     return;
   }
+  if (!isValid(state.join(''))) {
+    $('result').hidden = true;
+    setStatus('Deze mogelijkheid bestaat niet.', true);
+    return;
+  }
   let solution;
   try {
     solution = Cube.fromString(state.join('')).solve();
   } catch (e) { solution = null; }
   if (solution === null || solution === undefined) {
     $('result').hidden = true;
-    setStatus('Deze combinatie kan niet bestaan op een echte cube. Controleer of je kleuren goed zijn overgenomen (let op gedraaide hoeken of omgeklapte randen).', true);
+    setStatus('Deze mogelijkheid bestaat niet.', true);
     return;
   }
   moves = solution.trim() ? solution.trim().split(/\s+/) : [];

@@ -1,14 +1,22 @@
+/* zelfde kleuren als de homepage (style.css) */
 :root {
-  --bg: #f3f1ec; --ink: #1d2230; --muted: #6a7080; --panel: #ffffff; --line: #d9d5cb; --accent: #5b3fd6;
+  --bg: #111827; --ink: #ffffff; --muted: #aeb8c7; --panel: #172235; --line: #26354d; --accent: #4da3ff;
   --U: #f5f5f0; --R: #d62f2f; --F: #1f9d55; --D: #f2c200; --L: #f08a1c; --B: #2a64c9;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #14171f; --ink: #eceae4; --muted: #9096a5; --panel: #1d212c; --line: #323848; --accent: #9d86ff; }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
-       font-family: "Trebuchet MS", "Segoe UI", sans-serif; line-height: 1.5; }
+       font-family: Arial, sans-serif; line-height: 1.5; }
+
+/* HEADER (zelfde als homepage) */
+header { height: 75px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+         padding: 0 50px; background-color: #172235; border-bottom: 2px solid #26354d; }
+.logo { font-size: 24px; font-weight: bold; line-height: normal; }
+.logo span { color: #4da3ff; }
+.header-right { color: #8d9bb0; font-size: 13px; }
+@media (max-width: 800px) { header { padding: 0 20px; } }
+
 main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+.return-button { display: inline-block; text-decoration: none; margin-bottom: 20px; }
 h1 { font-size: 1.9rem; margin: 0 0 4px; letter-spacing: -0.01em; }
 p.lead { margin: 0 0 20px; color: var(--muted); max-width: 60ch; }
 
@@ -21,7 +29,7 @@ p.lead { margin: 0 0 20px; color: var(--muted); max-width: 60ch; }
 .net { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 520px;
        grid-template-areas: ". U . ." "L F R B" ". D . ."; margin-bottom: 20px; }
 .face { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 4px;
-        background: var(--ink); border-radius: 8px; grid-area: var(--a); }
+        background: #0e1016; border-radius: 8px; grid-area: var(--a); }
 .cell { aspect-ratio: 1; border: 0; border-radius: 4px; cursor: pointer; padding: 0; }
 .cell.center { cursor: not-allowed; box-shadow: inset 0 0 0 3px rgba(0,0,0,.35); }
 [data-c="U"] { background: var(--U); } [data-c="R"] { background: var(--R); }
@@ -29,10 +37,19 @@ p.lead { margin: 0 0 20px; color: var(--muted); max-width: 60ch; }
 [data-c="L"] { background: var(--L); } [data-c="B"] { background: var(--B); }
 
 .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-button.btn { font: inherit; font-weight: 700; padding: 10px 18px; border-radius: 10px;
-             border: 2px solid var(--ink); background: var(--panel); color: var(--ink); cursor: pointer; }
-button.btn.primary { background: var(--ink); color: var(--bg); }
-button.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn { font: inherit; font-size: 15px; font-weight: 700; padding: 10px 18px; border-radius: 5px;
+       border: 1px solid #52627a; background: var(--panel); color: var(--ink); cursor: pointer;
+       position: relative; overflow: hidden; z-index: 0; transition: color .35s, border-color .35s; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* slide animatie: een kleurvlak schuift van links naar rechts over de knop */
+.btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--accent);
+               transform: translateX(-101%); transition: transform .35s ease; }
+.btn.primary::before { background: #fff; }
+.btn:not(:disabled):hover::before { transform: translateX(0); }
+.btn:not(:disabled):hover { border-color: var(--accent); }
+.btn.primary:not(:disabled):hover { color: #111827; border-color: #fff; }
 
 #status { min-height: 1.5em; margin: 0 0 12px; }
 #status.error { color: #d62f2f; font-weight: 700; }
@@ -68,7 +85,7 @@ button.btn:disabled { opacity: .45; cursor: not-allowed; }
 
 .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
 .controls .btn { padding: 8px 14px; }
-.controls select { font: inherit; padding: 8px; border-radius: 10px; border: 2px solid var(--ink);
+.controls select { font: inherit; padding: 8px; border-radius: 5px; border: 1px solid #52627a;
                    background: var(--panel); color: var(--ink); margin-left: auto; }
 .bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-bottom: 14px; }
 .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }

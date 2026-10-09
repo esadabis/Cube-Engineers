@@ -17,6 +17,35 @@ body {
     padding: 30px;
 }
 
+header {
+    height: 75px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* body heeft 30px padding; header loopt toch over de volle breedte */
+    margin: -30px -30px 30px;
+    padding: 0 50px;
+    background-color: #172235;
+    border-bottom: 2px solid #26354d;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #4da3ff;
+}
+
+.header-right {
+    color: #8d9bb0;
+    font-size: 13px;
+}
+
 h1 {
     margin-bottom: 10px;
 }
@@ -152,6 +181,16 @@ button.action:hover {
 </head>
 
 <body>
+
+<header>
+    <div class="logo">
+        Cube<span>Engineers</span>
+    </div>
+
+    <div class="header-right">
+        <span>Cube solver</span>
+    </div>
+</header>
 
 <h1>Rubik's Cube invoeren</h1>
 

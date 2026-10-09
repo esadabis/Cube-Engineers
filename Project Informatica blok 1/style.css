@@ -15,6 +15,11 @@ body {
 header {
     height: 75px;
 
+    /* Blijft bovenaan in beeld tijdens het scrollen */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -107,9 +112,6 @@ button {
     border-radius: 5px;
 }
 
-.camera-button:hover {
-    background-color: #318de8;
-}
 
 .manual-button {
     background-color: #172235;
@@ -124,10 +126,49 @@ button {
     text-decoration: none;
 }
 
-.manual-button:hover {
-    background-color: #26354d;
+/* SLIDE ANIMATIE: een kleurvlak schuift van links naar rechts over de knop */
+
+.camera-button,
+.manual-button {
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+
+    transition: color 0.35s, border-color 0.35s;
 }
 
+.camera-button::before,
+.manual-button::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    transform: translateX(-101%);
+    transition: transform 0.35s ease;
+}
+
+.camera-button::before {
+    background-color: white;
+}
+
+.manual-button::before {
+    background-color: #4da3ff;
+}
+
+.camera-button:hover::before,
+.manual-button:hover::before {
+    transform: translateX(0);
+}
+
+.camera-button:hover {
+    color: #111827;
+}
+
+.manual-button:hover {
+    border-color: #4da3ff;
+}
 
 .cube-image {
     width: 430px;
