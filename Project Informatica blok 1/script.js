@@ -1,4 +1,4 @@
-const FACES = ['U', 'R', 'F', 'D', 'L', 'B'];            // volgorde die de solver gebruikt
+const FACES = ['U', 'R', 'F', 'D', 'L', 'B'];
 const NAMES = { U: 'Wit', R: 'Rood', F: 'Groen', D: 'Geel', L: 'Oranje', B: 'Blauw' };
 const SIDES = { U: 'bovenkant', R: 'rechterkant', F: 'voorkant', D: 'onderkant', L: 'linkerkant', B: 'achterkant' };
 const SOLVED = FACES.map(f => f.repeat(9)).join('');
@@ -16,7 +16,6 @@ function countColors() {
   return c;
 }
 
-/* ================= Invoer ================= */
 FACES.forEach(f => {
   const b = document.createElement('button');
   b.className = 'swatch'; b.dataset.c = f; b.title = NAMES[f];
@@ -53,7 +52,6 @@ function render() {
   $('result').hidden = true;
 }
 
-/* ================= 3D cube ================= */
 const S = 56;
 const root = $('cubeRoot');
 const cubies = [];
@@ -69,7 +67,6 @@ const STICKER_INDEX = {
   F: c => 18 + (c.y + 1) * 3 + (c.x + 1), D: c => 27 + (1 - c.z) * 3 + (c.x + 1),
   L: c => 36 + (c.y + 1) * 3 + (c.z + 1), B: c => 45 + (c.y + 1) * 3 + (1 - c.x)
 };
-// Draairichting (met de klok mee, gezien vanaf de zijde zelf)
 const ROT = {
   F: a => `rotateZ(${a}deg)`, B: a => `rotateZ(${-a}deg)`,
   R: a => `rotateX(${a}deg)`, L: a => `rotateX(${-a}deg)`,
@@ -93,8 +90,7 @@ for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) for (let z = -1; z <
   c.wrap = wrap; cubies.push(c);
 }
 
-/* ---- Weergave (automatisch naar de juiste kant draaien, of zelf slepen) ---- */
-const VIEWS = { a: { rx: -25, ry: -35 }, b: { rx: 25, ry: 145 } };   // a: boven/voor/rechts, b: onder/achter/links
+const VIEWS = { a: { rx: -25, ry: -35 }, b: { rx: 25, ry: 145 } };
 let view = 'a', rx = -25, ry = -35, autoView = true, viewBusyUntil = 0;
 function applyView(smooth) {
   root.style.transition = smooth ? 'transform .7s ease' : 'none';
@@ -124,7 +120,6 @@ $('stage').addEventListener('pointermove', e => {
 $('viewReset').onclick = resetView;
 applyView(false);
 
-/* ================= Stappenspeler ================= */
 let moves = [], idx = 0, cur = [], start = '', busy = false, playing = false, hlFace = null;
 
 const applyMove = (s, m) => { const c = Cube.fromString(s); c.move(m); return c.asString(); };
@@ -226,16 +221,14 @@ $('prevBtn').onclick = () => { playing = false; step(-1); };
 $('nextBtn').onclick = () => { playing = false; step(1); };
 $('playBtn').onclick = togglePlay;
 
-/* ================= Controle ================= */
-// Posities van de hoek- en randstukjes in de 54-tekenreeks (zelfde volgorde als de solver).
 const CORNER_POS = [[8, 9, 20], [6, 18, 38], [0, 36, 47], [2, 45, 11], [29, 26, 15], [27, 44, 24], [33, 53, 42], [35, 17, 51]];
 const CORNER_COL = ['URF', 'UFL', 'ULB', 'UBR', 'DFR', 'DLF', 'DBL', 'DRB'];
 const EDGE_POS = [[5, 10], [7, 19], [3, 37], [1, 46], [32, 16], [28, 25], [30, 43], [34, 52], [23, 12], [21, 41], [50, 39], [48, 14]];
 const EDGE_COL = ['UR', 'UF', 'UL', 'UB', 'DR', 'DF', 'DL', 'DB', 'FR', 'FL', 'BL', 'BR'];
 const parity = p => { let n = 0; for (let i = 0; i < p.length; i++) for (let j = i + 1; j < p.length; j++) if (p[i] > p[j]) n++; return n % 2; };
 
-// Geeft true als de cube echt kan bestaan.
-// Zonder deze controle blijft de solver bij een onmogelijke cube eindeloos zoeken.
+/*Fix voor vastlopen */
+
 function isValid(s) {
   const cp = [], co = [], ep = [], eo = [];
   for (let i = 0; i < 8; i++) {
@@ -258,7 +251,8 @@ function isValid(s) {
     && parity(cp) === parity(ep);
 }
 
-/* ================= Oplossen ================= */
+/*Oplossen van cube*/
+
 $('solveBtn').onclick = () => {
   const counts = countColors();
   const wrong = FACES.filter(f => counts[f] !== 9);
@@ -301,7 +295,6 @@ $('randomBtn').onclick = () => {
 
 render();
 
-// De opzoektabellen bouwen duurt een paar seconden; eerst de pagina laten tekenen.
 setTimeout(() => {
   try {
     Cube.initSolver();

@@ -1,4 +1,3 @@
-/* zelfde kleuren als de homepage (style.css) */
 :root {
   --bg: #111827; --ink: #ffffff; --muted: #aeb8c7; --panel: #172235; --line: #26354d; --accent: #4da3ff;
   --U: #f5f5f0; --R: #d62f2f; --F: #1f9d55; --D: #f2c200; --L: #f08a1c; --B: #2a64c9;
@@ -7,7 +6,7 @@
 body { margin: 0; background: var(--bg); color: var(--ink);
        font-family: Arial, sans-serif; line-height: 1.5; }
 
-/* HEADER (zelfde als homepage) */
+/*Header*/
 header { height: 75px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
          padding: 0 50px; background-color: #172235; border-bottom: 2px solid #26354d; }
 .logo { font-size: 24px; font-weight: bold; line-height: normal; }
@@ -43,7 +42,7 @@ p.lead { margin: 0 0 20px; color: var(--muted); max-width: 60ch; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 
-/* slide animatie: een kleurvlak schuift van links naar rechts over de knop */
+/*Slide animatie*/
 .btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--accent);
                transform: translateX(-101%); transition: transform .35s ease; }
 .btn.primary::before { background: #fff; }
@@ -56,7 +55,7 @@ p.lead { margin: 0 0 20px; color: var(--muted); max-width: 60ch; }
 .counts { display: flex; gap: 8px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-bottom: 16px; }
 .counts span.bad { color: #d62f2f; font-weight: 700; }
 
-/* ---------- Stap-voor-stap gids ---------- */
+/*Stappen gids*/
 .result { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 8px; }
 .result[hidden] { display: none; }
 .result h2 { margin: 0 0 10px; font-size: 1.15rem; }
