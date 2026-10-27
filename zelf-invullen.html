@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rubik's cube oplosser</title>
+<link rel="stylesheet" href="zelf-invullen-style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      Cube<span>Engineers</span>
+    </div>
+
+    <div class="header-right">
+      <span>Cube solver</span>
+    </div>
+  </header>
+<main>
+  <a href="index.html" class="btn return-button">← Terug naar homepage</a>
+
+  <h1>Rubik's cube oplosser</h1>
+  <p class="lead">Kies een kleur en klik op de vakjes om je cube na te maken. Houd de cube met wit boven en groen naar je toe, dan klopt de kaart hieronder.</p>
+
+  <div class="palette" id="palette" role="group" aria-label="Kleurkeuze"></div>
+  <div class="net" id="net"></div>
+
+  <div class="actions">
+    <button class="btn primary" id="solveBtn" disabled>Los op</button>
+    <button class="btn" id="resetBtn">Leegmaken</button>
+    <button class="btn" id="randomBtn" disabled>Willekeurige cube</button>
+  </div>
+
+  <p id="status" role="status">Oplosser laden…</p>
+  <div class="counts" id="counts"></div>
+
+  <section class="result" id="result" hidden>
+    <h2 id="resultTitle"></h2>
+
+    <div class="stage" id="stage"><div class="cubeRoot" id="cubeRoot"></div></div>
+    <div class="stageNote">
+      <span>De witte rand toont welke zijde je gaat draaien. Sleep om de cube te draaien.</span>
+      <button class="link" id="viewReset" hidden>Standaardweergave</button>
+    </div>
+
+    <div class="instr">
+      <div class="arrow" id="arrow"></div>
+      <div>
+        <div class="stepNo" id="stepNo"></div>
+        <div class="stepTxt" id="stepTxt"></div>
+        <div class="stepSub" id="stepSub"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="toStart">Begin</button>
+      <button class="btn" id="prevBtn">Vorige</button>
+      <button class="btn primary" id="playBtn">Afspelen</button>
+      <button class="btn" id="nextBtn">Volgende</button>
+      <select id="speed" aria-label="Snelheid">
+        <option value="900">Langzaam</option>
+        <option value="550" selected>Normaal</option>
+        <option value="250">Snel</option>
+      </select>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+
+    <p class="moves-label">Alle stappen (klik om naar een stap te springen)</p>
+    <ol class="moves" id="moves"></ol>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/cube.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/solve.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
