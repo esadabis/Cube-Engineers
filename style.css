@@ -1,0 +1,279 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #111827;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+
+
+header {
+    height: 75px;
+
+    /* Blijft bovenaan in beeld tijdens het scrollen */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 50px;
+
+    background-color: #172235;
+    border-bottom: 2px solid #26354d;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #4da3ff;
+}
+
+.header-right {
+    color: #8d9bb0;
+    font-size: 13px;
+}
+
+
+
+.hero {
+    min-height: 570px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 60px 8%;
+
+    gap: 80px;
+}
+
+.hero-text {
+    width: 50%;
+}
+
+.small-text {
+    color: #4da3ff;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    margin-bottom: 18px;
+}
+
+h1 {
+    font-size: 64px;
+    line-height: 1;
+
+    margin-bottom: 25px;
+}
+
+.intro {
+    color: #aeb8c7;
+
+    font-size: 17px;
+    line-height: 1.6;
+
+    max-width: 450px;
+
+    margin-bottom: 30px;
+}
+
+
+
+.buttons {
+    display: flex;
+    gap: 12px;
+}
+
+button {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+
+    padding: 13px 20px;
+
+    cursor: pointer;
+}
+
+.camera-button {
+    background-color: #4da3ff;
+    color: white;
+
+    border: none;
+    border-radius: 5px;
+}
+
+
+.manual-button {
+    background-color: #172235;
+    color: white;
+    border: 1px solid #52627a;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    padding: 13px 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+/* SLIDE ANIMATIE: een kleurvlak schuift van links naar rechts over de knop */
+
+.camera-button,
+.manual-button {
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+
+    transition: color 0.35s, border-color 0.35s;
+}
+
+.camera-button::before,
+.manual-button::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    transform: translateX(-101%);
+    transition: transform 0.35s ease;
+}
+
+.camera-button::before {
+    background-color: white;
+}
+
+.manual-button::before {
+    background-color: #4da3ff;
+}
+
+.camera-button:hover::before,
+.manual-button:hover::before {
+    transform: translateX(0);
+}
+
+.camera-button:hover {
+    color: #111827;
+}
+
+.manual-button:hover {
+    border-color: #4da3ff;
+}
+
+.cube-image {
+    width: 430px;
+    height: 430px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: transparent;
+
+    padding: 0;
+
+    transform: rotate(2deg);
+}
+
+.cube-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+
+    border-radius: 0;
+
+    /* maakt de schaduw alleen rond de cube */
+    filter: drop-shadow(0 18px 15px rgba(0, 0, 0, 0.35));
+}
+
+
+/* ONDERSTE GEDEELTE */
+
+.onderkant {
+    margin: 0 8%;
+
+    border-top: 1px solid #344258;
+
+    display: flex;
+}
+
+.onderkant div {
+    flex: 1;
+
+    padding: 25px 20px;
+
+    border-right: 1px solid #344258;
+}
+
+.onderkant div:first-child {
+    border-left: 1px solid #344258;
+}
+
+.onderkant span {
+    color: #4da3ff;
+
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.onderkant p {
+    margin-top: 8px;
+
+    color: #aeb8c7;
+}
+
+
+/* TELEFOON */
+
+@media (max-width: 800px) {
+
+    header {
+        padding: 0 20px;
+    }
+
+    .hero {
+        display: block;
+
+        padding: 45px 25px;
+    }
+
+    .hero-text {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 50px;
+    }
+
+    .cube-image {
+        width: 100%;
+        max-width: 380px;
+        height: 380px;
+
+        margin: 50px auto 20px;
+    }
+
+    .onderkant {
+        margin: 0 25px;
+
+        display: block;
+    }
+
+    .onderkant div {
+        border-left: 1px solid #344258;
+        border-bottom: 1px solid #344258;
+    }
+}
