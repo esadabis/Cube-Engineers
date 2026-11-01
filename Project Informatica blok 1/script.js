@@ -9,6 +9,9 @@ let state = SOLVED.split('');
 let brush = 'U';
 let ready = false;
 
+/*Worden ingevuld door camera.js (alleen op de camerapagina)*/
+let onEdit = () => {}, onRender = () => {}, onSolved = () => {}, onReset = () => {};
+
 function setStatus(text, isError) { $('status').textContent = text; $('status').className = isError ? 'error' : ''; }
 function countColors() {
   const c = Object.fromEntries(FACES.map(f => [f, 0]));
@@ -37,7 +40,7 @@ FACES.forEach((f, fi) => {
     const c = document.createElement('button');
     c.className = 'cell' + (i === 4 ? ' center' : '');
     c.setAttribute('aria-label', `${NAMES[f]} zijde, vakje ${i + 1}`);
-    if (i !== 4) c.onclick = () => { state[idx] = brush; render(); };
+    if (i !== 4) c.onclick = () => { state[idx] = brush; onEdit(idx); render(); };
     cells.push(c); face.appendChild(c);
   }
   $('net').appendChild(face);
@@ -50,6 +53,7 @@ function render() {
   $('counts').innerHTML = FACES.map(f =>
     `<span class="${counts[f] !== 9 ? 'bad' : ''}">${NAMES[f]}: ${counts[f]}/9</span>`).join('');
   $('result').hidden = true;
+  onRender();
 }
 
 const S = 56;
@@ -274,7 +278,8 @@ $('solveBtn').onclick = () => {
     setStatus('Deze mogelijkheid bestaat niet.', true);
     return;
   }
-  moves = solution.trim() ? solution.trim().split(/\s+/) : [];
+  onSolved();
+  moves =solution.trim() ? solution.trim().split(/\s+/) : [];
   start = state.join(''); cur = start.split(''); idx = 0; playing = false; busy = false;
   $('resultTitle').textContent = moves.length ? `Oplossing in ${moves.length} stappen` : 'Al opgelost';
   $('moves').innerHTML = moves.map((m, i) => `<li><button data-i="${i}">${m}</button></li>`).join('');
@@ -286,8 +291,8 @@ $('solveBtn').onclick = () => {
   $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-$('resetBtn').onclick = () => { state = SOLVED.split(''); setStatus(ready ? 'Klaar. Vul de cube in.' : 'Oplosser laden…'); render(); };
-$('randomBtn').onclick = () => {
+$('resetBtn').onclick = () => { state = SOLVED.split(''); onReset(); setStatus(ready ? 'Klaar. Vul de cube in.' : 'Oplosser laden…'); render(); };
+if ($('randomBtn')) $('randomBtn').onclick = () => {
   state = Cube.random().asString().split('');
   setStatus('Willekeurige cube geladen. Klik op "Los op".');
   render();
@@ -299,7 +304,8 @@ setTimeout(() => {
   try {
     Cube.initSolver();
     ready = true;
-    $('solveBtn').disabled = false; $('randomBtn').disabled = false;
+    $('solveBtn').disabled = false;
+    if ($('randomBtn')) $('randomBtn').disabled = false;
     setStatus('Klaar. Vul de cube in en klik op "Los op".');
   } catch (e) {
     setStatus('De oplosser kon niet geladen worden. Controleer je internetverbinding.', true);
