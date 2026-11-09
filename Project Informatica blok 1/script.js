@@ -15,8 +15,16 @@ let onEdit = () => {}, onRender = () => {}, onSolved = () => {}, onReset = () =>
 function setStatus(text, isError) { $('status').textContent = text; $('status').className = isError ? 'error' : ''; }
 function countColors() {
   const c = Object.fromEntries(FACES.map(f => [f, 0]));
-  state.forEach(k => c[k]++);
+  state.forEach(k => { if (k in c) c[k]++; });
   return c;
+}
+
+/*Startmelding: hangt af van of alle vakjes al goed zijn ingevuld*/
+const MSG_FILLED = 'Klaar! Klik op "Los op" om de oplossing te zien.';
+const MSG_EMPTY = 'Vul de cube in en klik daarna op "Los op".';
+function readyMsg() {
+  const c = countColors();
+  return FACES.every(f => c[f] === 9) ? MSG_FILLED : MSG_EMPTY;
 }
 
 FACES.forEach(f => {
@@ -53,6 +61,8 @@ function render() {
   $('counts').innerHTML = FACES.map(f =>
     `<span class="${counts[f] !== 9 ? 'bad' : ''}">${NAMES[f]}: ${counts[f]}/9</span>`).join('');
   $('result').hidden = true;
+  /*Alleen de startmelding bijwerken, andere meldingen (fouten e.d.) blijven staan*/
+  if (ready && [MSG_FILLED, MSG_EMPTY].includes($('status').textContent)) setStatus(readyMsg());
   onRender();
 }
 
@@ -215,7 +225,8 @@ async function togglePlay() {
   playing = true; refresh();
   while (playing && idx < moves.length) {
     await step(1);
-    await sleep(speed() > 400 ? 350 : 150);
+    /*Pauze tussen twee draaien groeit mee met de snelheid (100 tot 600 ms)*/
+    await sleep(Math.max(100, Math.min(600, speed() * 0.3)));
   }
   playing = false; refresh();
 }
@@ -306,7 +317,7 @@ setTimeout(() => {
     ready = true;
     $('solveBtn').disabled = false;
     if ($('randomBtn')) $('randomBtn').disabled = false;
-    setStatus('Klaar. Vul de cube in en klik op "Los op".');
+    setStatus(readyMsg());
   } catch (e) {
     setStatus('De oplosser kon niet geladen worden. Controleer je internetverbinding.', true);
   }

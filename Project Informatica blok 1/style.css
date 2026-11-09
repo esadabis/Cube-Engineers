@@ -4,16 +4,50 @@
     padding: 0;
 }
 
+/* Ruimte aan de zijkanten: groeit mee met de schermbreedte */
+:root {
+    --gutter: clamp(20px, 6vw, 120px);
+    --max-width: 1600px;
+    --cube: clamp(240px, 30vw, 680px);
+}
+
+html {
+    background-color: #111827;
+}
+
 body {
+    /* Achtergrond vult altijd het hele scherm, ook op grote monitoren */
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+
     background-color: #111827;
     color: white;
     font-family: Arial, sans-serif;
 }
 
+/* Zachte gloed over het hele scherm; staat vast, dus geen losse vlakken bij scrollen */
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    background:
+        radial-gradient(ellipse at 80% 25%, rgba(77, 163, 255, 0.14), transparent 55%),
+        radial-gradient(ellipse at 10% 95%, rgba(77, 163, 255, 0.07), transparent 50%),
+        #111827;
+    background-size: cover;    /* staat na de shorthand, dus blijft gelden */
+    pointer-events: none;
+}
+
 
 
 header {
-    height: 75px;
+    height: clamp(64px, 5vw, 110px);
 
     /* Blijft bovenaan in beeld tijdens het scrollen */
     position: sticky;
@@ -24,14 +58,14 @@ header {
     align-items: center;
     justify-content: space-between;
 
-    padding: 0 50px;
+    padding: 0 var(--gutter);
 
     background-color: #172235;
     border-bottom: 2px solid #26354d;
 }
 
 .logo {
-    font-size: 24px;
+    font-size: clamp(22px, 1.6vw, 40px);
     font-weight: bold;
 }
 
@@ -41,37 +75,52 @@ header {
 
 .header-right {
     color: #8d9bb0;
-    font-size: 13px;
+    font-size: clamp(13px, 0.9vw, 22px);
 }
 
+
+main {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
 
 
 .hero {
-    min-height: 570px;
+    flex: 1;
+
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
-    padding: 60px 8%;
+    padding: clamp(40px, 7vh, 140px) var(--gutter);
 
-    gap: 80px;
+    gap: clamp(40px, 5vw, 160px);
 }
 
 .hero-text {
-    width: 50%;
+    flex: 1;
+    min-width: 0;
 }
 
 .small-text {
     color: #4da3ff;
 
-    font-size: 13px;
+    font-size: clamp(13px, 0.9vw, 22px);
     font-weight: bold;
 
     margin-bottom: 18px;
 }
 
 h1 {
-    font-size: 64px;
+    font-size: clamp(40px, 4.4vw, 120px);
     line-height: 1;
 
     margin-bottom: 25px;
@@ -80,10 +129,10 @@ h1 {
 .intro {
     color: #aeb8c7;
 
-    font-size: 17px;
+    font-size: clamp(16px, 1.15vw, 28px);
     line-height: 1.6;
 
-    max-width: 450px;
+    max-width: 28em;
 
     margin-bottom: 30px;
 }
@@ -92,6 +141,7 @@ h1 {
 
 .buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
 }
 
@@ -111,8 +161,8 @@ button {
     border: none;
     border-radius: 5px;
     font-family: Arial, sans-serif;
-    font-size: 15px;
-    padding: 13px 20px;
+    font-size: clamp(15px, 1vw, 24px);
+    padding: 0.87em 1.33em;
     cursor: pointer;
     display: inline-block;
     text-decoration: none;
@@ -125,8 +175,8 @@ button {
     border: 1px solid #52627a;
     border-radius: 5px;
     font-family: Arial, sans-serif;
-    font-size: 15px;
-    padding: 13px 20px;
+    font-size: clamp(15px, 1vw, 24px);
+    padding: 0.87em 1.33em;
     cursor: pointer;
     display: inline-block;
     text-decoration: none;
@@ -176,40 +226,224 @@ button {
     border-color: #4da3ff;
 }
 
+
+/* 3D RUBIK'S CUBE (alleen CSS) */
+
 .cube-image {
-    width: 430px;
-    height: 430px;
+    flex: none;
+
+    position: relative;
+
+    width: var(--cube);
+    height: var(--cube);
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background-color: transparent;
-
-    padding: 0;
-
-    transform: rotate(2deg);
+    perspective: calc(var(--cube) * 3.5);
 }
 
-.cube-image img {
+.cube-float {
+    width: 56%;
+    height: 56%;
+
+    transform-style: preserve-3d;
+    animation: cube-float 6s ease-in-out infinite;
+}
+
+.cube-scene {
+    position: relative;
+
     width: 100%;
     height: 100%;
 
-    object-fit: contain;
+    transform-style: preserve-3d;
+    transform: rotateX(-26deg) rotateY(-35deg);
 
+    /* Rustige draai-animatie */
+    animation: cube-spin 26s linear infinite;
+}
+
+.cube-face {
+    position: absolute;
+    inset: 0;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    /* Zwarte randen tussen de vakjes */
+    gap: calc(var(--cube) * 0.012);
+    padding: calc(var(--cube) * 0.012);
+
+    background-color: #0a0b0e;
+
+    /* Geen afgeronde hoeken: anders kijk je door de hoekjes heen */
+    border-radius: 0;
+    backface-visibility: hidden;
+
+    box-shadow: inset 0 0 calc(var(--cube) * 0.02) rgba(0, 0, 0, 0.9);
+}
+
+/* Zwarte binnenkern, net iets kleiner dan de buitenkant, dekt naden en hoekjes af */
+.cube-core {
+    position: absolute;
+    inset: 0;
+
+    background-color: #0a0b0e;
+}
+
+.cube-core.front  { transform: translateZ(calc(var(--cube) * 0.28 - 2px)); }
+.cube-core.back   { transform: rotateY(180deg) translateZ(calc(var(--cube) * 0.28 - 2px)); }
+.cube-core.right  { transform: rotateY(90deg) translateZ(calc(var(--cube) * 0.28 - 2px)); }
+.cube-core.left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) * 0.28 - 2px)); }
+.cube-core.top    { transform: rotateX(90deg) translateZ(calc(var(--cube) * 0.28 - 2px)); }
+.cube-core.bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) * 0.28 - 2px)); }
+
+/* Logo-kant: één groot wit vlak zonder zwarte lijnen */
+.logo-face::before {
+    content: "";
+
+    position: absolute;
+    inset: calc(var(--cube) * 0.012);
+
+    border-radius: calc(var(--cube) * 0.03);
+
+    background-color: #f5f5f0;
+    background-image: linear-gradient(145deg,
+            rgba(255, 255, 255, 0.45) 0%,
+            rgba(255, 255, 255, 0.08) 38%,
+            rgba(0, 0, 0, 0) 60%,
+            rgba(0, 0, 0, 0.2) 100%);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+        inset 0 calc(var(--cube) * -0.006) calc(var(--cube) * 0.012) rgba(0, 0, 0, 0.25);
+}
+
+/* Logo schuin over de witte kant */
+.cube-logo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transform: rotate(-45deg);
+
+    font-family: Arial, sans-serif;
+    font-size: calc(var(--cube) * 0.068);
+    font-weight: bold;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+
+    color: #172235;
+    pointer-events: none;
+}
+
+.cube-logo span {
+    color: #2a7de0;
+}
+
+/* Belichting: bovenkant het lichtst, onderkant het donkerst */
+.cube-face::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+    background-color: black;
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.cube-face.top::after    { opacity: 0; }
+.cube-face.bottom::after { opacity: 0.4; }
+
+.cube-face.front  { transform: translateZ(calc(var(--cube) * 0.28)); }
+.cube-face.back   { transform: rotateY(180deg) translateZ(calc(var(--cube) * 0.28)); }
+.cube-face.right  { transform: rotateY(90deg) translateZ(calc(var(--cube) * 0.28)); }
+.cube-face.left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) * 0.28)); }
+.cube-face.top    { transform: rotateX(90deg) translateZ(calc(var(--cube) * 0.28)); }
+.cube-face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) * 0.28)); }
+
+/* Stickers: afgeronde hoekjes + glans */
+.cube-face i {
     display: block;
 
-    border-radius: 0;
+    border-radius: 18%;
 
-    /* maakt de schaduw alleen rond de cube */
-    filter: drop-shadow(0 18px 15px rgba(0, 0, 0, 0.35));
+    background-image: linear-gradient(145deg,
+            rgba(255, 255, 255, 0.45) 0%,
+            rgba(255, 255, 255, 0.08) 38%,
+            rgba(0, 0, 0, 0) 60%,
+            rgba(0, 0, 0, 0.2) 100%);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+        inset 0 calc(var(--cube) * -0.006) calc(var(--cube) * 0.012) rgba(0, 0, 0, 0.25);
+}
+
+.cube-face .w { background-color: #f5f5f0; }
+.cube-face .y { background-color: #f2c200; }
+.cube-face .r { background-color: #d62f2f; }
+.cube-face .o { background-color: #f08a1c; }
+.cube-face .b { background-color: #2a64c9; }
+.cube-face .g { background-color: #1f9d55; }
+
+/* Schaduw onder de cube */
+.cube-shadow {
+    position: absolute;
+    left: 50%;
+    bottom: 4%;
+
+    width: 55%;
+    height: 9%;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
+    filter: blur(6px);
+
+    animation: cube-shadow 6s ease-in-out infinite;
+}
+
+@keyframes cube-spin {
+    from { transform: rotateX(-26deg) rotateY(-35deg); }
+    to   { transform: rotateX(-26deg) rotateY(325deg); }
+}
+
+@keyframes cube-float {
+    0%, 100% { transform: translateY(-3%); }
+    50%      { transform: translateY(3%); }
+}
+
+@keyframes cube-shadow {
+    0%, 100% { transform: translateX(-50%) scale(0.85); opacity: 0.7; }
+    50%      { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* Mensen die minder beweging willen: cube staat stil */
+@media (prefers-reduced-motion: reduce) {
+    .cube-scene,
+    .cube-float,
+    .cube-shadow {
+        animation: none;
+    }
 }
 
 
 /* ONDERSTE GEDEELTE */
 
 .onderkant {
-    margin: 0 8%;
+    width: calc(100% - 2 * var(--gutter));
+    max-width: calc(var(--max-width) - 2 * var(--gutter));
+    margin: 0 auto clamp(30px, 5vh, 80px);
 
     border-top: 1px solid #344258;
 
@@ -231,7 +465,7 @@ button {
 .onderkant span {
     color: #4da3ff;
 
-    font-size: 13px;
+    font-size: clamp(13px, 0.9vw, 22px);
     font-weight: bold;
 }
 
@@ -239,42 +473,41 @@ button {
     margin-top: 8px;
 
     color: #aeb8c7;
+    font-size: clamp(16px, 1vw, 26px);
 }
 
 
-/* TELEFOON */
+/* GROTE MONITOREN (1440p / 4K) */
+
+@media (min-width: 2400px) {
+    :root {
+        --max-width: 2400px;
+    }
+}
+
+
+/* TELEFOON EN KLEINE TABLETS */
 
 @media (max-width: 800px) {
 
-    header {
-        padding: 0 20px;
-    }
-
     .hero {
-        display: block;
+        flex-direction: column;
+        align-items: stretch;
 
-        padding: 45px 25px;
-    }
-
-    .hero-text {
-        width: 100%;
+        padding: 45px var(--gutter);
     }
 
     h1 {
-        font-size: 50px;
+        font-size: clamp(36px, 11vw, 50px);
     }
 
     .cube-image {
-        width: 100%;
-        max-width: 380px;
-        height: 380px;
+        --cube: min(80vw, 340px);
 
-        margin: 50px auto 20px;
+        margin: 20px auto 0;
     }
 
     .onderkant {
-        margin: 0 25px;
-
         display: block;
     }
 

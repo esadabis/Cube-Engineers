@@ -55,9 +55,59 @@
             </div>
 
 
-            <div class="cube-image">
+            <!-- 3D Rubik's Cube gemaakt met CSS (vervangt het oude plaatje) -->
+            <div class="cube-image" role="img" aria-label="Draaiende Rubik's Cube">
 
-                <img src="rubiks-cube-transparant-v5.png" alt="Rubiks Cube">
+                <div class="cube-float">
+                    <div class="cube-scene">
+
+                        <!-- Zwarte binnenkern: zorgt dat je niet door de hoekjes heen kijkt -->
+                        <div class="cube-core front"></div>
+                        <div class="cube-core back"></div>
+                        <div class="cube-core right"></div>
+                        <div class="cube-core left"></div>
+                        <div class="cube-core top"></div>
+                        <div class="cube-core bottom"></div>
+
+                        <!-- Logo-kant: helemaal wit met schuin ons logo -->
+                        <div class="cube-face front logo-face">
+                            <div class="cube-logo">Cube<span>Engineers</span></div>
+                        </div>
+
+                        <div class="cube-face right">
+                            <i class="b"></i><i class="r"></i><i class="r"></i>
+                            <i class="w"></i><i class="r"></i><i class="y"></i>
+                            <i class="r"></i><i class="o"></i><i class="g"></i>
+                        </div>
+
+                        <div class="cube-face back">
+                            <i class="y"></i><i class="b"></i><i class="o"></i>
+                            <i class="b"></i><i class="b"></i><i class="r"></i>
+                            <i class="w"></i><i class="b"></i><i class="g"></i>
+                        </div>
+
+                        <div class="cube-face left">
+                            <i class="o"></i><i class="w"></i><i class="o"></i>
+                            <i class="g"></i><i class="o"></i><i class="r"></i>
+                            <i class="y"></i><i class="o"></i><i class="b"></i>
+                        </div>
+
+                        <div class="cube-face top">
+                            <i class="w"></i><i class="w"></i><i class="r"></i>
+                            <i class="y"></i><i class="w"></i><i class="g"></i>
+                            <i class="w"></i><i class="o"></i><i class="w"></i>
+                        </div>
+
+                        <div class="cube-face bottom">
+                            <i class="g"></i><i class="y"></i><i class="y"></i>
+                            <i class="r"></i><i class="y"></i><i class="b"></i>
+                            <i class="y"></i><i class="w"></i><i class="o"></i>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="cube-shadow"></div>
 
             </div>
 
