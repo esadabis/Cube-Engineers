@@ -8,12 +8,24 @@ body {
     background-color: #111827;
     color: white;
     font-family: Arial, sans-serif;
+
+    /* Pagina is minimaal zo hoog als het scherm */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 
 
 header {
     height: 75px;
+    flex-shrink: 0;
 
     /* Blijft bovenaan in beeld tijdens het scrollen */
     position: sticky;
@@ -30,13 +42,10 @@ header {
     border-bottom: 2px solid #26354d;
 }
 
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.logo span {
-    color: #4da3ff;
+.logo img {
+    height: 60px;
+    width: auto;
+    display: block;
 }
 
 .header-right {
@@ -47,6 +56,7 @@ header {
 
 
 .hero {
+    flex: 1;
     min-height: 570px;
 
     display: flex;
@@ -206,6 +216,7 @@ button {
     margin: 0 8%;
 
     border-top: 1px solid #344258;
+    border-bottom: 1px solid #344258;
 
     display: flex;
 }
@@ -270,6 +281,9 @@ button {
         margin: 0 25px;
 
         display: block;
+
+        /* de vakjes hebben op de telefoon al een eigen lijntje onderaan */
+        border-bottom: none;
     }
 
     .onderkant div {
